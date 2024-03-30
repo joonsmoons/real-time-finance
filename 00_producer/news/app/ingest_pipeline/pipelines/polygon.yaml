@@ -1,0 +1,8 @@
+name: polygon
+config:
+  log_folder_path: "./ingest_pipeline/logs"
+  max_timestamp_file: "./ingest_pipeline/data/max_timestamp.txt"
+  default_max_timestamp: "2024-03-22T00:00:00Z"
+  limit: 10
+schedule:
+  sleep_seconds: 10
