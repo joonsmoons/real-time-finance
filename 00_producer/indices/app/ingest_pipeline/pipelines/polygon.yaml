@@ -1,0 +1,6 @@
+name: polygon
+config:
+  log_folder_path: "./ingest_pipeline/logs"
+  time_threshold: 10
+schedule:
+  sleep_seconds: 10
