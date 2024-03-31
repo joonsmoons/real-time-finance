@@ -5,6 +5,8 @@ __pycache__/
 
 .databricks_secrets
 .kafka_connector
+.codedeploy
+
 # C extensions
 *.so
 
