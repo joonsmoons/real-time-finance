@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+.databricks_secrets
+.kafka_connector
 # C extensions
 *.so
 
@@ -161,6 +163,8 @@ cython_debug/
 
 # Local .terraform directories
 **/.terraform/*
+**.terraform.lock*
+*/archive/*
 
 # .tfstate files
 *.tfstate
