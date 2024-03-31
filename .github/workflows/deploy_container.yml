@@ -1,0 +1,69 @@
+name: deploy container
+on:
+  # Can be manually triggered
+  workflow_dispatch: {}
+  # Trigger a deploy every time there is a merge to main
+  push:
+    branches:
+      - main
+
+env:
+  # Set this to your AWS region, e.g. us-east-1
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  # Set this to the URI of your ECR repo
+  NEWS_ECR_REPO_URI: ${{ secrets.NEWS_ECR_REPO_URI }}
+  INDICIES_ECR_REPO_URI: ${{ secrets.INDICIES_ECR_REPO_URI }}
+  # Set this to the AWS role Github Actions will assume
+  AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+
+jobs:
+  deploy_to_ecr:
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout code repository in agent
+        uses: actions/checkout@v4
+        with:
+          set-safe-directory: true
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          role-session-name: GitHub_to_AWS_via_FederatedOIDC
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: News - Build, tag, and push image to Amazon ECR
+        id: build-news-image
+        working-directory: ./01_extract_load/news
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          echo "Target repo: ${ECR_REPO_URI}:${IMAGE_TAG}"
+          docker build -t ${ECR_REPO_URI}:${IMAGE_TAG} .
+          docker push ${ECR_REPO_URI}:${IMAGE_TAG}
+          echo "image=${ECR_REPO_URI}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Indicies - Build, tag, and push image to Amazon ECR
+        id: build-indicies-image
+        working-directory: ./01_extract_load/indicies
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          echo "Target repo: ${ECR_REPO_URI}:${IMAGE_TAG}"
+          docker build -t ${ECR_REPO_URI}:${IMAGE_TAG} .
+          docker push ${ECR_REPO_URI}:${IMAGE_TAG}
+          echo "image=${ECR_REPO_URI}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
