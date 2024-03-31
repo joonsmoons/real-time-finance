@@ -6,8 +6,6 @@ COPY /app .
 
 COPY requirements.txt .
 
-COPY .env .
-
 RUN pip install -r requirements.txt
 
 CMD ["python", "-m", "ingest_pipeline.pipelines.polygon"]
