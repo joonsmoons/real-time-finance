@@ -1,5 +1,6 @@
 import logging
 import time
+import os
 
 
 class PipelineLogging:
@@ -13,6 +14,8 @@ class PipelineLogging:
         """
         self.pipeline_name = pipeline_name
         self.log_folder_path = log_folder_path
+        if not os.path.exists(log_folder_path):
+            os.makedirs(log_folder_path)
         logger = logging.getLogger(pipeline_name)
         logger.setLevel(logging.INFO)
         self.file_path = (
