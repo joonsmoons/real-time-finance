@@ -6,6 +6,7 @@ __pycache__/
 .databricks_secrets
 .kafka_connector
 .codedeploy
+.ec2_setup
 
 # C extensions
 *.so

@@ -71,10 +71,8 @@ jobs:
         run: |
           jq --arg IMAGE_TAG "${{ env.IMAGE_TAG }}" '.containerDefinitions[0].image |= "\($IMAGE_TAG)"' ${{ env.NEWS_ECS_TASK_DEFINITION }} > temp.json && mv temp.json ${{ env.NEWS_ECS_TASK_DEFINITION }}
 
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+      - name: Run Amazon ECS task
+        uses: aws-actions/amazon-ecs-run-task@v1
         with:
-          task-definition: ${{ steps.build-news-image-task-def.outputs.task-definition }}
-          service: ${{ env.NEWS_ECS_SERVICE }}
           cluster: ${{ env.NEWS_ECS_CLUSTER }}
-          wait-for-service-stability: true
+          task-definition: ${{ steps.build-news-image-task-def.outputs.task-definition }}
