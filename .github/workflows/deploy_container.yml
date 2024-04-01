@@ -15,7 +15,10 @@ env:
   INDICIES_ECR_REPO_URI: ${{ secrets.INDICIES_ECR_REPO_URI }}
   # Set this to the AWS role Github Actions will assume
   AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-
+  NEWS_ECS_SERVICE: polygon-news_ingest # name of the service
+  NEWS_ECS_CLUSTER: polygon-news_ingest # name of the cluster
+  NEWS_ECS_TASK_DEFINITION: .aws/news-task-definition.json # path of the JSON task definition
+  CONTAINER_NAME: "app" # name of the container name in the task definition
 jobs:
   deploy_to_ecr:
     runs-on: ubuntu-latest
@@ -53,3 +56,25 @@ jobs:
           docker build -t ${NEWS_ECR_REPO_URI}:${IMAGE_TAG} .
           docker push ${NEWS_ECR_REPO_URI}:${IMAGE_TAG}
           echo "image=${NEWS_ECR_REPO_URI}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: build-news-image-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
+        with:
+          task-definition: ${{ env.NEWS_ECS_TASK_DEFINITION }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.build-news-image.outputs.image }}
+
+      - name: Tag image in task definition
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          jq --arg IMAGE_TAG "${{ env.IMAGE_TAG }}" '.containerDefinitions[0].image |= "\($IMAGE_TAG)"' ${{ env.NEWS_ECS_TASK_DEFINITION }} > temp.json && mv temp.json ${{ env.NEWS_ECS_TASK_DEFINITION }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@df9643053eda01f169e64a0e60233aacca83799a
+        with:
+          task-definition: ${{ steps.build-news-image-task-def.outputs.task-definition }}
+          service: ${{ env.NEWS_ECS_SERVICE }}
+          cluster: ${{ env.NEWS_ECS_CLUSTER }}
+          wait-for-service-stability: true
