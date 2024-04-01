@@ -65,7 +65,7 @@ jobs:
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.build-news-image.outputs.image }}
 
-      - name: Tag image in task definition
+      - name: Tag image in task definitions
         env:
           IMAGE_TAG: ${{ github.sha }}
         run: |
