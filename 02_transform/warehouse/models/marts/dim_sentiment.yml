@@ -1,0 +1,6 @@
+models:
+  - name: dim_sentiment
+    columns:
+      - name: sentiment_label
+        tests:
+          - not_null

@@ -1,0 +1,11 @@
+warehouse:
+  target: dev
+  outputs:
+    dev:
+      type: clickhouse
+      schema: default
+      host: yarsxhricg.ap-southeast-2.aws.clickhouse.cloud
+      port: 8443
+      username: default
+      password: "{{ env_var('CLICKHOUSE_PASSWORD') }}"
+      secure: true
