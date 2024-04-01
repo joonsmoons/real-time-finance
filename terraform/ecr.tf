@@ -20,7 +20,7 @@ variable repo_name_news {
   type = string
 }
 
-variable repo_name_indicies {
+variable repo_name_stocks {
   type = string
 }
 
@@ -30,7 +30,6 @@ variable environment {
 
 variable aws_region {
   type = string
-  default = "ap-northeast-2"
 }
 
 resource "aws_ecr_repository" "news_repository" {
@@ -44,8 +43,8 @@ resource "aws_ecr_repository" "news_repository" {
 
 }
 
-resource "aws_ecr_repository" "indicies_repository" {
-  name                 = "${var.environment}-${var.repo_name_indicies}"
+resource "aws_ecr_repository" "stocks_repository" {
+  name                 = "${var.environment}-${var.repo_name_stocks}"
   image_tag_mutability = "IMMUTABLE"
 
   tags = {
