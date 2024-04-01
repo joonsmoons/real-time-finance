@@ -20,7 +20,7 @@ env:
   NEWS_ECS_TASK_DEFINITION: .aws/news-task-definition.json # path of the JSON task definition
   CONTAINER_NAME: "app" # name of the container name in the task definition
 jobs:
-  deploy_to_ecr:
+  deploy_to_ecs:
     runs-on: ubuntu-latest
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
