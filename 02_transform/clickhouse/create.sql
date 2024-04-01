@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS raw;
 
-CREATE TABLE raw.news_sentiment (
+CREATE OR REPLACE TABLE raw.news_sentiment (
     article_id String,
     title String,
     description String,

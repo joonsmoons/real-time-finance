@@ -1,0 +1,11 @@
+models:
+  - name: dim_article
+    columns:
+      - name: article_id
+        tests:
+          - unique
+          - not_null
+
+      - name: published_utc
+        tests:
+          - not_null
