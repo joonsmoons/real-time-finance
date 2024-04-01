@@ -25,11 +25,11 @@ def pipeline(config: dict, pipeline_logging: PipelineLogging):
     # set up environment variables
     pipeline_logging.logger.info("Getting pipeline environment variables")
     API_KEY_ID = os.environ.get("POLYGON_API_KEY")
-    KAFKA_HOST = os.environ.get("bootstrap.servers")
-    KAFKA_PROTOCOL = os.environ.get("security.protocol")
-    KAFKA_SASL_MECHANISMS = os.environ.get("sasl.mechanisms")
-    KAFKA_USERNAME = os.environ.get("sasl.username")
-    KAFKA_PASSWORD = os.environ.get("sasl.password")
+    KAFKA_HOST = os.environ.get("bootstrap_servers")
+    KAFKA_PROTOCOL = os.environ.get("security_protocol")
+    KAFKA_SASL_MECHANISMS = os.environ.get("sasl_mechanisms")
+    KAFKA_USERNAME = os.environ.get("sasl_username")
+    KAFKA_PASSWORD = os.environ.get("sasl_password")
     KAFKA_TOPIC_NAME = os.environ.get("kafka_news_topic_name")
 
     pipeline_logging.logger.info("Creating Polygon.io API client")
