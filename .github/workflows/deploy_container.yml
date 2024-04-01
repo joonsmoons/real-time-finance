@@ -57,7 +57,21 @@ jobs:
           docker push ${NEWS_ECR_REPO_URI}:${IMAGE_TAG}
           echo "image=${NEWS_ECR_REPO_URI}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
+      - name: Stocks - Build, tag, and push image to Amazon ECR
+        id: build-stocks-image
+        working-directory: ./01_extract_load/stocks
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          echo "Target repo: ${NEWS_ECR_REPO_URI}:${IMAGE_TAG}"
+          docker build -t ${NEWS_ECR_REPO_URI}:${IMAGE_TAG} .
+          docker push ${NEWS_ECR_REPO_URI}:${IMAGE_TAG}
+          echo "image=${NEWS_ECR_REPO_URI}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
+
+      - name: News - Fill in the new image ID in the Amazon ECS task definition
         id: build-news-image-task-def
         uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
         with:
@@ -65,13 +79,13 @@ jobs:
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.build-news-image.outputs.image }}
 
-      - name: Tag image in task definitions
+      - name: News - Tag image in task definitions
         env:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           jq --arg IMAGE_TAG "${{ env.IMAGE_TAG }}" '.containerDefinitions[0].image |= "\($IMAGE_TAG)"' ${{ env.NEWS_ECS_TASK_DEFINITION }} > temp.json && mv temp.json ${{ env.NEWS_ECS_TASK_DEFINITION }}
 
-      - name: Run Amazon ECS task
+      - name: News - Run Amazon ECS task
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           cluster: ${{ env.NEWS_ECS_CLUSTER }}
