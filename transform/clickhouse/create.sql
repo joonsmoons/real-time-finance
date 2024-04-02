@@ -13,4 +13,24 @@ CREATE OR REPLACE TABLE raw.news_sentiment (
 ) ENGINE = MergeTree()
 ORDER BY article_id
 
+CREATE TABLE raw.stocks_minute_aggregate
+(
+    ev String,
+    sym String,
+    v UInt32,
+    av UInt64,
+    op Float32,
+    vw Float32,
+    o Float32,
+    c Float32,
+    h Float32,
+    l Float32,
+    a Float32,
+    z UInt32,
+    s UInt64,
+    e UInt64
+)
+ENGINE = MergeTree
+ORDER BY (sym, s);
+
 

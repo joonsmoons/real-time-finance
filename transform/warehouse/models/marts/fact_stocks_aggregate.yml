@@ -1,0 +1,13 @@
+models:
+  - name: fact_stocks_aggregate
+    columns:
+      - name: article_sentiment_key
+        test:
+          - not_null
+          - unique
+      - name: ticker
+        tests:
+          - not_null
+      - name: starting_timestamp
+        tests:
+          - not_null

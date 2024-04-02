@@ -1,7 +1,8 @@
-version: 2
+version: 1
 
 sources:
   - name: raw
     database: raw
     tables:
       - name: news_sentiment
+      - name: stocks_minute_aggregate

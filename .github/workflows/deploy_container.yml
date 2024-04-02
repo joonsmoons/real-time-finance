@@ -45,7 +45,7 @@ jobs:
 
       - name: News - Build, tag, and push image to Amazon ECR
         id: build-news-image
-        working-directory: ./01_extract_load/news
+        working-directory: ./extract_load/news
         env:
           IMAGE_TAG: ${{ github.sha }}
         run: |
@@ -59,7 +59,7 @@ jobs:
 
       - name: Stocks - Build, tag, and push image to Amazon ECR
         id: build-stocks-image
-        working-directory: ./01_extract_load/stocks
+        working-directory: ./extract_load/stocks
         env:
           IMAGE_TAG: ${{ github.sha }}
         run: |
