@@ -1,0 +1,18 @@
+models:
+  - name: news_sentiment
+    columns:
+      - name: article_id
+        tests:
+          - not_null
+      - name: ticker
+        tests:
+          - not_null
+      - name: published_et
+        tests:
+          - not_null
+      - name: sentiment_label
+        tests:
+          - not_null
+      - name: sentiment_score
+        tests:
+          - not_null

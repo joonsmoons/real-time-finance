@@ -1,0 +1,13 @@
+models:
+  - name: fact_article_sentiment
+    columns:
+      - name: article_sentiment_key
+        test:
+          - not_null
+          - unique
+      - name: article_id
+        tests:
+          - not_null
+      - name: ticker
+        tests:
+          - not_null

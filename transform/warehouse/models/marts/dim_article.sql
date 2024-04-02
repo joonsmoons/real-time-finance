@@ -10,8 +10,7 @@ with a as (
     description,
     published_utc,
     publisher
-    from {{ source('raw', 'news_sentiment') }}
-    WHERE toDate(toDateTime(published_utc, 'America/New_York')) = yesterday()
+    from {{ ref('news_sentiment') }}
 )
 
 select  {{ dbt_utils.generate_surrogate_key(['article_id']) }} as article_key,
