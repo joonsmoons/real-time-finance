@@ -9,3 +9,19 @@ warehouse:
       username: default
       password: "{{ env_var('CLICKHOUSE_PASSWORD') }}"
       secure: true
+    ci:
+      type: clickhouse
+      schema: default
+      host: { { env_var('CLICKHOUSE_HOST') } }
+      port: { { env_var('CLICKHOUSE_PORT') } }
+      username: default
+      password: "{{ env_var('CLICKHOUSE_PASSWORD') }}"
+      secure: true
+    prod:
+      type: clickhouse
+      schema: default
+      host: { { env_var('CLICKHOUSE_HOST') } }
+      port: { { env_var('CLICKHOUSE_PORT') } }
+      username: default
+      password: "{{ env_var('CLICKHOUSE_PASSWORD') }}"
+      secure: true
