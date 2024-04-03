@@ -8,10 +8,10 @@ main() {
     black "${TOP_DIR}/extract_load/"
 
     # Setup dbt
-    dbt deps --project-dir "${TOP_DIR}/transform/warehouse" --profile warehouse --target prod
+    dbt deps --project-dir "${TOP_DIR}/transform/warehouse"
 
     # Lint SQL
-    sqlfluff fix -f "${TOP_DIR}"/transform/warehouse
+    sqlfluff fix -d clickhouse -f "${TOP_DIR}"/transform/warehouse
 
     # If the linter produce diffs, fail the linter
     if [ -z "$(git status --porcelain)" ]; then
