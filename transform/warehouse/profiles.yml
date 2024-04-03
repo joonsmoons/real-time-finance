@@ -1,5 +1,5 @@
 warehouse:
-  target: dev
+  target: prod
   outputs:
     dev:
       type: clickhouse
