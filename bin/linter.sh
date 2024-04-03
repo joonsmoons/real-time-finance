@@ -8,7 +8,7 @@ main() {
     black "${TOP_DIR}/extract_load/"
 
     # Setup dbt
-    dbt deps --project-dir "${TOP_DIR}/transform/warehouse" --dialect clickhouse
+    dbt deps --project-dir "${TOP_DIR}/transform/warehouse" --profile warehouse --target prod
 
     # Lint SQL
     sqlfluff fix -f "${TOP_DIR}"/transform/warehouse
