@@ -4,7 +4,8 @@ models:
       - name: article_id
         tests:
           - not_null
-      - name: ticker
+          - unique
+      - name: tickers
         tests:
           - not_null
       - name: published_et

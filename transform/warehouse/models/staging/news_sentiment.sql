@@ -1,17 +1,17 @@
 {{
     config(
-        materialized="incremental",
-        unique_key=["article_id", "ticker"],
-        incremental_strategy="delete+insert"
+        materialized='materialized_view',
+        engine='MergeTree()',
+        order_by='(article_id)'
     )
 }}
 
 select article_id,
-    arrayJoin(tickers) AS ticker,
+    tickers,
     title,
     description,
     published_utc,
-    toDateTime(published_utc, 'America/New_York') AS published_et,
+    toStartOfMinute(toDateTime(published_utc, 'America/New_York')) AS published_at,
     keywords,
     publisher,
     sentiment_label,
@@ -21,8 +21,6 @@ select article_id,
         ELSE sentiment_score
     END AS sentiment_score
 from {{ source('raw', 'news_sentiment') }}
-where toDate(toDateTime(published_utc, 'America/New_York')) = yesterday()
+where toDate(toDateTime(published_utc, 'America/New_York')) >= toDate(toTimezone(now(), 'America/New_York')) - 7
+AND toDate(toDateTime(published_utc, 'America/New_York')) < toDate(toTimezone(now(), 'America/New_York'))
 and length(tickers) > 0
-{% if is_incremental() %}
-    and published_utc > (select max(published_utc) from {{ this }} )
-{% endif %}

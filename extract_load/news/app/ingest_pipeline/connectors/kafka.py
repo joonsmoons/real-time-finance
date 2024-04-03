@@ -58,13 +58,14 @@ class KafkaClient:
                 err: Error message if delivery fails.
                 msg: Message object containing delivery information.
             """
-            if err:
-                sys.stderr.write("Error: Message delivery failed: %s\n" % err)
-            else:
-                sys.stderr.write(
-                    "Message delivered to %s [%d] @ %d\n"
-                    % (msg.topic(), msg.partition(), msg.offset())
-                )
+            pass
+            # if err:
+            #     sys.stderr.write("Error: Message delivery failed: %s\n" % err)
+            # else:
+            #     sys.stderr.write(
+            #         "Message delivered to %s [%d] @ %d\n"
+            #         % (msg.topic(), msg.partition(), msg.offset())
+            #     )
 
         if data:
             # Produce each message to the Kafka topic

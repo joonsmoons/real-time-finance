@@ -33,4 +33,3 @@ CREATE TABLE raw.stocks_minute_aggregate
 ENGINE = MergeTree
 ORDER BY (sym, s);
 
-

@@ -1,6 +1,8 @@
 {{
     config(
-        materialized="view"
+        materialized='materialized_view',
+        engine='MergeTree()',
+        order_by='(article_id)'
     )
 }}
 
@@ -17,6 +19,5 @@ select  {{ dbt_utils.generate_surrogate_key(['article_id']) }} as article_key,
     article_id,
     title,
     description,
-    published_utc,
     publisher
 from a
