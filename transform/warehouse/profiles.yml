@@ -4,8 +4,8 @@ warehouse:
     dev:
       type: clickhouse
       schema: default
-      host: { { env_var('CLICKHOUSE_HOST') } }
-      port: { { env_var('CLICKHOUSE_PORT') } }
+      host: "{{ env_var('CLICKHOUSE_HOST') }}"
+      port: 8443
       username: default
       password: "{{ env_var('CLICKHOUSE_PASSWORD') }}"
       secure: true
