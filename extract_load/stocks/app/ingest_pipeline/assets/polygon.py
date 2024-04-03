@@ -15,7 +15,8 @@ async def load_polygon_stocks(kafka_client: KafkaClient, messages_buffer: str) -
     for messages in messages_buffer:
         messages_list = json.loads(messages)
         for msg in messages_list:
-            kafka_client.produce(json.dumps(msg))
+            if msg and msg.get("ev") == "AM":
+                kafka_client.produce(json.dumps(msg))
 
     # Flush all messages to Kafka
     kafka_client.flush()

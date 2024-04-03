@@ -8,7 +8,7 @@ models:
       - name: tickers
         tests:
           - not_null
-      - name: published_et
+      - name: published_at
         tests:
           - not_null
       - name: sentiment_label

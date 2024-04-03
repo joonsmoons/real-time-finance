@@ -6,6 +6,6 @@ models:
           - unique
           - not_null
 
-      - name: published_utc
+      - name: published_at
         tests:
           - not_null

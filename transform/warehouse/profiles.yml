@@ -4,8 +4,8 @@ warehouse:
     dev:
       type: clickhouse
       schema: default
-      host: yarsxhricg.ap-southeast-2.aws.clickhouse.cloud
-      port: 8443
+      host: { { env_var('CLICKHOUSE_HOST') } }
+      port: { { env_var('CLICKHOUSE_PORT') } }
       username: default
       password: "{{ env_var('CLICKHOUSE_PASSWORD') }}"
       secure: true
