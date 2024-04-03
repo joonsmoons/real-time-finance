@@ -51,3 +51,6 @@ tzlocal==5.2
 urllib3==1.26.18
 zipp==3.18.1
 zstandard==0.22.0
+black==23.9.1
+sqlfluff==2.3.2
+sqlfluff-templater-dbt==2.3.2
