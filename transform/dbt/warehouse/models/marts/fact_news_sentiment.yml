@@ -1,0 +1,19 @@
+models:
+  - name: fact_news_sentiment
+    columns:
+      - name: article_id
+        tests:
+          - not_null
+          - unique
+      - name: tickers
+        tests:
+          - not_null
+      - name: published_at
+        tests:
+          - not_null
+      - name: sentiment_label
+        tests:
+          - not_null
+      - name: sentiment_score
+        tests:
+          - not_null

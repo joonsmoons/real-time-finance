@@ -1,14 +1,17 @@
 models:
-  - name: news_sentiment
+  - name: fact_ticker_news_sentiment
     columns:
+      - name: stocks_aggregate_key
+        tests:
+          - unique
+          - not_null
       - name: article_id
         tests:
           - not_null
-          - unique
-      - name: tickers
+      - name: ticker
         tests:
           - not_null
-      - name: published_at
+      - name: starting_timestamp
         tests:
           - not_null
       - name: sentiment_label

@@ -1,0 +1,13 @@
+models:
+  - name: stocks_aggregate
+    columns:
+      - name: stocks_aggregate_key
+        test:
+          - not_null
+          - unique
+      - name: ticker
+        tests:
+          - not_null
+      - name: starting_timestamp
+        tests:
+          - not_null

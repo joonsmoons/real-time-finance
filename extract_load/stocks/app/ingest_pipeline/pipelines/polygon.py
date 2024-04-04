@@ -31,7 +31,7 @@ def pipeline(config: dict, pipeline_logging: PipelineLogging):
     KAFKA_SASL_MECHANISMS = os.environ.get("sasl_mechanisms")
     KAFKA_USERNAME = os.environ.get("sasl_username")
     KAFKA_PASSWORD = os.environ.get("sasl_password")
-    KAFKA_TOPIC_NAME = os.environ.get("kafka_stocks_topic_name")
+    KAFKA_TOPIC_NAME = "polygon_stocks_topic"
 
     pipeline_logging.logger.info("Creating Polygon.io API client")
     polygon_client = PolygonApiClient(api_key_id=API_KEY_ID)

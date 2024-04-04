@@ -1,7 +1,0 @@
-models:
-  - name: dim_keyword
-    columns:
-      - name: keyword
-        tests:
-          - unique
-          - not_null

@@ -4,8 +4,8 @@ dialect = clickhouse
 exclude_rules = L016,L028,L027
 
 [sqlfluff:templater:dbt]
-project_dir = transform/warehouse
-profiles_dir = transform/warehouse
+project_dir = transform/dbt/warehouse
+profiles_dir = transform/dbt/warehouse
 target = ci
 
 [sqlfluff:templater:jinja]
