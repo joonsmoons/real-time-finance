@@ -7,7 +7,10 @@
 }}
 
 with polygon_stocks_topic as (
-    select *, row_number() OVER (PARTITION BY sym, s ORDER BY s) AS rnk
+    select
+        *,
+        row_number() OVER (PARTITION BY sym, s ORDER BY s) AS unique_rnk,
+        rank() over (partition by sym order by toDate(toDateTime64(s / 1000, 3, 'America/New_York')) desc) AS dt_rnk
     from {{ source('raw', 'polygon_stocks_topic') }}
 )
 select {{ dbt_utils.generate_surrogate_key(['sym', 's']) }} as stocks_aggregate_key,
@@ -29,7 +32,6 @@ select {{ dbt_utils.generate_surrogate_key(['sym', 's']) }} as stocks_aggregate_
     s
 from polygon_stocks_topic
 where 1 = 1
-and toDate(toDateTime(toDateTime64(s / 1000, 3, 'America/New_York'), 'America/New_York')) >= toDate(toDateTime(now(), 'America/New_York')) - 28
-and toDate(toDateTime(toDateTime64(e / 1000, 3, 'America/New_York'), 'America/New_York')) <= toDate(toDateTime(now(), 'America/New_York'))
 and ev = 'AM'
-and rnk = 1
+and unique_rnk = 1
+and dt_rnk = 1

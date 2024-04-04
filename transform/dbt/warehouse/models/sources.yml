@@ -6,5 +6,3 @@ sources:
     tables:
       - name: polygon_stocks_topic
       - name: polygon_sentiment_news_topic
-      - name: exchanges
-      - name: tickers

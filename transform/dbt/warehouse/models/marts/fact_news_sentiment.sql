@@ -26,6 +26,5 @@ select
     end as sentiment_score
 from {{ source('raw', 'polygon_sentiment_news_topic') }}
 where 1 = 1
-and toDate(toDateTime(published_utc, 'America/New_York')) >= toDate(toDateTime(NOW(), 'America/New_York')) - 28
-and toDate(toDateTime(published_utc, 'America/New_York')) <= toDate(toDateTime(NOW(), 'America/New_York'))
-and LENGTH(tickers) > 0
+AND toMonth(toDateTime(published_utc, 'America/New_York')) >= toMonth(toDateTime(NOW(), 'America/New_York')) - 3  -- Three months ago
+AND toMonth(toDateTime(published_utc, 'America/New_York')) <= toMonth(toDateTime(NOW(), 'America/New_York'))  -- Current month

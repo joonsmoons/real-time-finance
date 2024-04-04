@@ -1,5 +1,5 @@
 models:
-  - name: stocks_aggregate
+  - name: fact_stocks_aggregate
     columns:
       - name: stocks_aggregate_key
         test:
