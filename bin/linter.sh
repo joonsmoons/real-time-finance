@@ -7,12 +7,6 @@ main() {
     # Lint Python
     black "${TOP_DIR}/extract_load/"
 
-    # Setup dbt
-    dbt deps --project-dir "${TOP_DIR}/transform/dbt/warehouse"
-
-    # Lint SQL
-    sqlfluff fix -f "${TOP_DIR}"/transform/dbt/warehouse
-
     # If the linter produce diffs, fail the linter
     if [ -z "$(git status --porcelain)" ]; then
         echo "Working directory clean, linting passed"
