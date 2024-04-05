@@ -10,12 +10,21 @@
    - [Reporting](#reporting)
 - [CI/CD](#cicd)
 
-This ELT data engineering project integrates stock price aggregate data obtained via websockets and news data from Polygon.io API, streaming them into Kafka via Confluent Cloud. Utilizing a sentiment analysis model from Hugging Face hosted on a Databricks cluster with PySpark, sentiment is tagged onto individual news articles in real-time before being streamed into another topic. The data streams are then processed through Clickhouse, leveraging dbt and materialized views for transformations. Finally, the data is visualized in real-time on Preset hosting Superset, updating every 30 seconds to display dynamic insights such as stock price, volume, and the latest news sentiment associated with the stock ticker.
+This data engineering project integrates stock price data from websockets and news data from Polygon.io API, streaming them into Kafka via Confluent Cloud. Utilizing Hugging Face's sentiment analysis model on Databricks with PySpark, sentiment is tagged onto news articles in real-time before being processed through ClickHouse with dbt and materialized views. Real-time visualization on Preset hosting Superset updates every 30 seconds, displaying dynamic insights like stock price, volume, and news sentiment.
 
 ![Preset Dashboard](https://github.com/joonsmoons/real_time_finance/assets/113525606/c0c5a552-08c0-43fb-b993-d05c43ec2f94)
 
+## Problem Statement
+This project solves the challenge of accessing real-time insights into financial market trends. By combining stock price data with news analysis, it enables users to track market sentiment and stock performance dynamically, aiding in timely investment decisions.
+
+### Key Questions Addressed by this Solution:
+- What are the top trending stocks based on the number of news articles published about them in the past week?
+- How do stock prices change throughout the day, and what is the trading volume associated with these changes?
+- What is the sentiment associated with the latest news articles about certain stocks, and how does it correlate with changes in stock prices?
+- Can users search for specific keywords or ticker symbols to find relevant news articles, and what insights can be derived from this data?
+
 ## Source Dataset
-[Polygon.io](https://polygon.io) - A financial data provider offering real-time and historical market data. Polygon.io provides various APIs for accessing financial market data, including stock prices, trade volumes, and news articles related to financial markets. This project utilizes Polygon.io's API to ingest real-time stock price and news data into the system, facilitating the analysis and visualization of financial market trends.
+[Polygon.io](https://polygon.io) - A financial data provider offering real-time and historical market data. Polygon.io provides various APIs for accessing financial market data, including stock prices, trade volumes, and news articles related to financial markets. This project utilizes Polygon.io's API to ingest real-time stock price and news data into the system, facilitating the analysis and visualization of financial market trends. 
 
 ## Architecture
 ![Architecture](https://github.com/joonsmoons/real_time_finance/assets/113525606/145a6284-0467-4bbc-bf2e-2a90c3d45a30)
@@ -32,7 +41,7 @@ The next step involves streaming the data into ClickHouse using ClickPipes. Foll
 ![DBT Data Lineage](https://github.com/joonsmoons/real_time_finance/assets/113525606/a0391366-617e-4c9c-af75-0cc6bf55a0b1)
 
 ### Reporting
-Finally, reporting is conducted through Preset, a cloud service that hosts Apache Superset on the backend. The dashboard showcases various insights, including the top 50 trending stocks by article count for the past week, an intraday stock price chart, an intraday stock volume chart, and the latest news. Additionally, the dashboard features a search bar allowing users to search for specific keywords or ticker symbols, enhancing the interactivity and usability of the reporting interface.
+Finally, reporting is conducted through Preset, a cloud service that hosts Apache Superset on the backend. The dashboard showcases various insights, including the top 50 trending stocks by article count for the past week, an intraday stock price chart, an intraday stock volume chart, and the latest news. Additionally, the dashboard features a search bar allowing users to search for specific keywords or ticker symbols, enhancing the interactivity and usability of the reporting interface. This dashboard refreshes every 30 seconds. 
 
 ![Preset Dashboard](https://github.com/joonsmoons/real_time_finance/assets/113525606/c0c5a552-08c0-43fb-b993-d05c43ec2f94)
 
