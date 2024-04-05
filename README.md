@@ -17,7 +17,7 @@ This data engineering project integrates stock price data from websockets and ne
 ## Problem Statement
 This project solves the challenge of accessing real-time insights into financial market trends. By combining stock price data with news analysis, it enables users to track market sentiment and stock performance dynamically, aiding in timely investment decisions.
 
-### Key Questions Addressed by this Solution:
+#### Key Questions Addressed by this Solution:
 - What are the top trending stocks based on the number of news articles published about them in the past week?
 - How do stock prices change throughout the day, and what is the trading volume associated with these changes?
 - What is the sentiment associated with the latest news articles about certain stocks, and how does it correlate with changes in stock prices?
@@ -42,8 +42,6 @@ The next step involves streaming the data into ClickHouse using ClickPipes. Foll
 
 ### Reporting
 Finally, reporting is conducted through Preset, a cloud service that hosts Apache Superset on the backend. The dashboard showcases various insights, including the top 50 trending stocks by article count for the past week, an intraday stock price chart, an intraday stock volume chart, and the latest news. Additionally, the dashboard features a search bar allowing users to search for specific keywords or ticker symbols, enhancing the interactivity and usability of the reporting interface. This dashboard refreshes every 30 seconds. 
-
-![Preset Dashboard](https://github.com/joonsmoons/real_time_finance/assets/113525606/c0c5a552-08c0-43fb-b993-d05c43ec2f94)
 
 ### CI/CD
 To streamline the development process, GitHub Actions is leveraged for continuous integration and deployment (CI/CD). This automated pipeline includes linting of Python scripts to maintain code quality standards and seamless deployment of Docker images to Amazon Elastic Container Registry (ECR), ensuring efficient management and dissemination of updated Docker containers.
