@@ -1,0 +1,5 @@
+name: sentiment
+config:
+  log_folder_path: "./ingest_pipeline/logs"
+schedule:
+  sleep_seconds: 10

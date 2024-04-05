@@ -1,7 +1,7 @@
 from confluent_kafka import Producer
 
 
-class KafkaClient:
+class KafkaProducerClient:
     def __init__(
         self,
         bootstrap_servers: str,
@@ -12,7 +12,7 @@ class KafkaClient:
         topic_name: str,
     ):
         """
-        Initializes a Kafka client instance.
+        Initializes a Kafka producer client instance.
 
         Args:
             bootstrap_servers (str): Comma-separated list of broker addresses.
@@ -32,49 +32,33 @@ class KafkaClient:
         # Initialize Kafka producer
         self.producer = Producer(
             {
-                "bootstrap.servers": bootstrap_servers,
-                "security.protocol": security_protocol,
-                "sasl.mechanisms": sasl_mechanisms,
-                "sasl.username": sasl_username,
-                "sasl.password": sasl_password,
+                "bootstrap.servers": self.bootstrap_servers,
+                "security.protocol": self.security_protocol,
+                "sasl.mechanisms": self.sasl_mechanisms,
+                "sasl.username": self.sasl_username,
+                "sasl.password": self.sasl_password,
             }
         )
 
     def produce(self, data: list):
         """
-        Produces messages to the Kafka topic.
+        Produces messages to the configured Kafka topic.
 
         Args:
             data (list): List of dictionaries representing messages to be produced.
         """
-
-        def delivery_callback(err, msg):
-            """
-            Delivery callback function.
-
-            Args:
-                err: Error message if delivery fails.
-                msg: Message object containing delivery information.
-            """
-            pass
-            # if err:
-            #     sys.stderr.write("Error: Message delivery failed: %s\n" % err)
-            # else:
-            #     sys.stderr.write(
-            #         "Message delivered to %s [%d] @ %d\n"
-            #         % (msg.topic(), msg.partition(), msg.offset())
-            #     )
-
         if data:
             # Produce each message to the Kafka topic
             self.producer.produce(
                 self.topic_name,
                 key=None,
                 value=data,
-                callback=delivery_callback,
             )
         # Poll Kafka for messages (0 indicates non-blocking operation)
         self.producer.poll(0)
 
     def flush(self):
+        """
+        Flushes the Kafka producer to ensure all messages are sent.
+        """
         self.producer.flush()

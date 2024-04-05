@@ -1,13 +1,16 @@
+sss
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-
+*archive*
+*indicies*
 .databricks_secrets
 .kafka_connector
 .codedeploy
 .ec2_setup
-
+.aws/*
 # C extensions
 *.so
 

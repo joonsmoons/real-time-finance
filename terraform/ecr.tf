@@ -24,6 +24,10 @@ variable repo_name_stocks {
   type = string
 }
 
+variable repo_name_news_sentiment {
+  type = string
+}
+
 variable environment {
   type = string
 }
@@ -45,6 +49,17 @@ resource "aws_ecr_repository" "news_repository" {
 
 resource "aws_ecr_repository" "stocks_repository" {
   name                 = "${var.environment}-${var.repo_name_stocks}"
+  image_tag_mutability = "IMMUTABLE"
+
+  tags = {
+      environment = var.environment
+      deploy_method = local.deploy_method
+  }
+
+}
+
+resource "aws_ecr_repository" "news_sentiment_repository" {
+  name                 = "${var.environment}-${var.repo_name_news_sentiment}"
   image_tag_mutability = "IMMUTABLE"
 
   tags = {

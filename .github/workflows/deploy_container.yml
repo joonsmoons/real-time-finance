@@ -12,15 +12,11 @@ env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   # Set this to the URI of your ECR repo
   NEWS_ECR_REPO_URI: ${{ secrets.NEWS_ECR_REPO_URI }}
+  NEWS_SENTIMENT_ECR_REPO_URI: ${{ secrets.NEWS_SENTIMENT_ECR_REPO_URI }}
   STOCKS_ECR_REPO_URI: ${{ secrets.STOCKS_ECR_REPO_URI }}
   # Set this to the AWS role Github Actions will assume
   AWS_ROLE_TO_ASSUME: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-  STOCKS_ECS_SERVICE: polygon-stocks_ingest # name of the service
-  STOCKS_ECS_CLUSTER: polygon-stocks_ingest # name of the cluster
-  NEWS_ECS_SERVICE: polygon-news_ingest # name of the service
-  NEWS_ECS_CLUSTER: polygon-news_ingest # name of the cluster
-  STOCKS_ECS_TASK_DEFINITION: .aws/stocks-task-definition.json # path of the JSON task definition
-  NEWS_ECS_TASK_DEFINITION: .aws/news-task-definition.json # path of the JSON task definition
+
   CONTAINER_NAME: "app" # name of the container name in the task definition
 jobs:
   deploy_to_ecs:
@@ -60,6 +56,20 @@ jobs:
           docker push ${NEWS_ECR_REPO_URI}:${IMAGE_TAG}
           echo "image=${NEWS_ECR_REPO_URI}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
+      - name: News Sentiment - Build, tag, and push image to Amazon ECR
+        id: build-news-sentiment-image
+        working-directory: ./extract_load/news_sentiment
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          echo "Target repo: ${NEWS_SENTIMENT_ECR_REPO_URI}:${IMAGE_TAG}"
+          docker build -t ${NEWS_SENTIMENT_ECR_REPO_URI}:${IMAGE_TAG} .
+          docker push ${NEWS_SENTIMENT_ECR_REPO_URI}:${IMAGE_TAG}
+          echo "image=${NEWS_SENTIMENT_ECR_REPO_URI}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
+
       - name: Stocks - Build, tag, and push image to Amazon ECR
         id: build-stocks-image
         working-directory: ./extract_load/stocks
@@ -73,43 +83,3 @@ jobs:
           docker build -t ${STOCKS_ECR_REPO_URI}:${IMAGE_TAG} .
           docker push ${STOCKS_ECR_REPO_URI}:${IMAGE_TAG}
           echo "image=${STOCKS_ECR_REPO_URI}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
-
-      - name: News - Fill in the new image ID in the Amazon ECS task definition
-        id: build-news-image-task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
-        with:
-          task-definition: ${{ env.NEWS_ECS_TASK_DEFINITION }}
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-news-image.outputs.image }}
-
-      - name: News - Tag image in task definitions
-        env:
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          jq --arg IMAGE_TAG "${{ env.IMAGE_TAG }}" '.containerDefinitions[0].image |= "\($IMAGE_TAG)"' ${{ env.NEWS_ECS_TASK_DEFINITION }} > temp.json && mv temp.json ${{ env.NEWS_ECS_TASK_DEFINITION }}
-
-      - name: News - Run Amazon ECS task
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          cluster: ${{ env.NEWS_ECS_CLUSTER }}
-          task-definition: ${{ steps.build-news-image-task-def.outputs.task-definition }}
-
-      - name: Stocks - Fill in the new image ID in the Amazon ECS task definition
-        id: build-stocks-image-task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@c804dfbdd57f713b6c079302a4c01db7017a36fc
-        with:
-          task-definition: ${{ env.STOCKS_ECS_TASK_DEFINITION }}
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-stocks-image.outputs.image }}
-
-      - name: Stocks - Tag image in task definitions
-        env:
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          jq --arg IMAGE_TAG "${{ env.IMAGE_TAG }}" '.containerDefinitions[0].image |= "\($IMAGE_TAG)"' ${{ env.NEWS_ECS_TASK_DEFINITION }} > temp.json && mv temp.json ${{ env.NEWS_ECS_TASK_DEFINITION }}
-
-      - name: Stocks - Run Amazon ECS task
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          cluster: ${{ env.STOCKS_ECS_CLUSTER }}
-          task-definition: ${{ steps.build-stocks-image-task-def.outputs.task-definition }}
