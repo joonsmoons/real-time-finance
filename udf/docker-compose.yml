@@ -1,0 +1,77 @@
+version: "2"
+services:
+  broker:
+    image: confluentinc/cp-kafka:7.4.1
+    hostname: broker
+    container_name: broker
+    ports:
+      - 29092:29092
+    env_file:
+      - .env
+    environment:
+      CONFLUENT_CLOUD_KAFKA_BROKER_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: SASL_SSL:SASL_SSL
+      KAFKA_ADVERTISED_LISTENERS: SASL_SSL://${CONFLUENT_CLOUD_KAFKA_BROKER}:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: SASL_SSL
+      KAFKA_SASL_MECHANISM: PLAIN
+      KAFKA_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$CONFLUENT_CLOUD_API_KEY\" password=\"$CONFLUENT_CLOUD_API_SECRET\";'
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_PROCESS_ROLES: broker
+      KAFKA_NODE_ID: 1
+      KAFKA_LOG_DIRS: /tmp/kafka-logs
+      CLUSTER_ID: "$CONFLUENT_CLOUD_CLUSTER_ID"
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.3.0
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - broker
+    ports:
+      - 8081:8081
+    env_file:
+      - .env
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: broker:9092
+      SCHEMA_REGISTRY_KAFKASTORE_SECURITY_PROTOCOL: SASL_SSL
+      SCHEMA_REGISTRY_KAFKASTORE_SASL_MECHANISM: PLAIN
+      SCHEMA_REGISTRY_KAFKASTORE_SASL_JAAS_CONFIG: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="$CONFLUENT_CLOUD_API_KEY" password="$CONFLUENT_CLOUD_API_SECRET";'
+  ksqldb-server:
+    image: confluentinc/ksqldb-server:0.28.2
+    hostname: ksqldb-server
+    container_name: ksqldb-server
+    depends_on:
+      - broker
+      - schema-registry
+    volumes:
+      - ./extensions:/etc/ksqldb/ext
+    ports:
+      - 8088:8088
+    env_file:
+      - .env
+    environment:
+      KSQL_CONFIG_DIR: /etc/ksqldb
+      KSQL_KSQL_EXTENSION_DIR: /etc/ksqldb/ext/
+      KSQL_LOG4J_OPTS: -Dlog4j.configuration=file:/etc/ksqldb/log4j.properties
+      KSQL_BOOTSTRAP_SERVERS: ${CONFLUENT_CLOUD_KAFKA_BROKER}:9092
+      KSQL_HOST_NAME: ksqldb-server
+      KSQL_LISTENERS: http://0.0.0.0:8088
+      KSQL_CACHE_MAX_BYTES_BUFFERING: 0
+      KSQL_KSQL_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+  ksqldb-cli:
+    image: confluentinc/ksqldb-cli:0.28.2
+    container_name: ksqldb-cli
+    depends_on:
+      - broker
+      - ksqldb-server
+    entrypoint: /bin/sh
+    tty: true
+    env_file:
+      - .env
+    environment:
+      KSQL_CONFIG_DIR: /etc/ksqldb
+    volumes:
+      - ./src:/opt/app/src
+      - ./test:/opt/app/test
