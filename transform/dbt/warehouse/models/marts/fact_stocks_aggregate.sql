@@ -9,9 +9,12 @@
 with polygon_stocks_topic as (
     select
         *,
-        row_number() OVER (PARTITION BY sym, s ORDER BY s) AS unique_rnk,
-        rank() over (order by toDate(toDateTime64(s / 1000, 3, 'America/New_York')) desc) AS dt_rnk
+        toDate(toDateTime64(s / 1000, 3, 'America/New_York')) as dt,
+        row_number() OVER (PARTITION BY sym, s ORDER BY s) AS unique_rnk
     from {{ source('raw', 'polygon_stocks_topic') }}
+), max_date as (
+    select max(dt) AS max_dt
+    from polygon_stocks_topic
 )
 select {{ dbt_utils.generate_surrogate_key(['sym', 's']) }} as stocks_aggregate_key,
     ev as event_type,
@@ -31,7 +34,8 @@ select {{ dbt_utils.generate_surrogate_key(['sym', 's']) }} as stocks_aggregate_
     sym,
     s
 from polygon_stocks_topic
+cross join max_date
 where 1 = 1
 and ev = 'AM'
 and unique_rnk = 1
-and dt_rnk = 1
+and dt = (select max_dt from max_date)
