@@ -7,8 +7,8 @@
 }}
 
 select
-    {{ dbt_utils.generate_surrogate_key(['article_id']) }} as article_key,
-    article_id,
+    {{ dbt_utils.generate_surrogate_key(['id']) }} as article_key,
+    id,
     tickers,
     title,
     description,
@@ -24,6 +24,6 @@ select
         when sentiment_label = 'negative' then -ABS(sentiment_score)
         else sentiment_score
     end as sentiment_score
-from {{ source('raw', 'polygon_sentiment_news_topic') }}
+from {{ source('raw', 'polygon_news_sentiment_topic') }}
 where 1 = 1
 AND toMonth(toDateTime(published_utc, 'America/New_York')) > toMonth(toDateTime(NOW(), 'America/New_York')) - 3  -- Three months ago

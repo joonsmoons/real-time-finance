@@ -1,7 +1,7 @@
 models:
   - name: fact_news_sentiment
     columns:
-      - name: article_id
+      - name: id
         tests:
           - not_null
           - unique
