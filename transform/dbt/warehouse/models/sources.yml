@@ -5,4 +5,4 @@ sources:
     database: raw
     tables:
       - name: polygon_stocks_topic
-      - name: polygon_sentiment_news_topic
+      - name: polygon_news_sentiment_topic
